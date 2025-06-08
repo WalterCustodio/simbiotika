@@ -21,8 +21,11 @@
 
 
 import ddf.minim.*;
-Minim minim, cumbia, tango;
-AudioPlayer player;
+Minim minim;
+AudioPlayer cumbia, bombo, tango;
+//AudioPlayer bombo;
+AudioPlayer sHongo1, sHongo2, sHongo3, sHongo4, sHongo5, sHongo6;
+
 
 String[] Ritmo = new String[3];
 String[] Naturaleza = new String[3];
@@ -40,7 +43,9 @@ void setup() {
 
   // Inicializa Minim
   minim = new Minim(this);
-  player = minim.loadFile("data/Cuarteto.mp3");
+  cumbia = minim.loadFile("data/Cuarteto.mp3");
+  bombo = minim.loadFile("data/bombo.mp3");
+  tango = minim.loadFile("data/tango.mp3");
 
 
   size(300, 300);
@@ -64,6 +69,8 @@ void setup() {
 }
 
 void draw() {
+  cumbia.setGain(-0.0);
+  
   println("onRitmo1: ", onRitmo1);
   background(255);
   textSize(18);
@@ -125,6 +132,9 @@ void draw() {
     text(Ritmo[1], 30, 100);
   }
   if (sonido1==3) {
+    onRitmo1=false;
+    onRitmo2=false;
+    onRitmo3=true;
     fill(PRENDIDO);
     rect(18, 135, 54, 20);
     fill(0);
@@ -191,7 +201,7 @@ void draw() {
   //-------------------------------//
 
   if (onRitmo1==true) {
-   // player.play();
+   
    
     onRitmo2=false;
     onRitmo3=false;
@@ -207,16 +217,23 @@ void draw() {
 
 void keyPressed() {
   if (keyCode == 65) { //letra A mayuscula
-    sonido1=1;
-     player.loop();
+     bombo.pause();
+     tango.pause();
+     sonido1=1;
+     cumbia.loop();
   }
   if (keyCode == 66) { // B
+    cumbia.pause();
+    tango.pause();
     sonido1=2;
-    player.pause();
-  }
+    bombo.loop();
+  } 
   if (keyCode == 67) { //C
+    bombo.pause();
+    cumbia.pause();
     sonido1=3;
-  }
+    tango.loop();
+  } 
   if (keyCode == 68) { // D
     sonido2=4;
   }
