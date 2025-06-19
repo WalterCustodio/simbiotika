@@ -239,7 +239,7 @@ void keyPressed() {
      cumbia.loop();
      sonido1=1; //guarda con este, quizas limitarlo todo a las variables "onRitmo" y definirlas en un condicional aparte (agregando el pause() y loop() de cada sonido)
   }
-  if (key == 'b' || key == 'B') { // B
+  if (key == 'b' || key == 'B') { // cumbia
     cumbia.pause();
     tango.pause();
     bombo.loop();
