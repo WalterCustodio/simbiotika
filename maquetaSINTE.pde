@@ -251,7 +251,7 @@ void keyPressed() {
     tango.loop();
     sonido1=3;
   } 
-  if (keyCode == 68) { // D
+  if (key == 'd' || key == 'D') { // D
     brasas.pause();
     caracola.pause();
     gotas.loop();
@@ -263,7 +263,7 @@ void keyPressed() {
     brasas.loop();
     sonido2=5;
   }
-  if (keyCode == 70) { //F caracola
+  if (key == 'f' || key == 'F') { //F caracola
     gotas.pause();    
     brasas.pause();
     caracola.loop();
@@ -279,22 +279,22 @@ void keyPressed() {
     zumbido.loop();
     sonido3=8;
   }
-  /*if (keyCode == 73) { //I
+  /*if (key == 'i' || key == 'I') { //I
     sonido3=9;
   }*/
-  if (keyCode == 74) { //J
+  if (key == 'j' || key == 'J') { //J
     cantoUnDia.pause();
     coroToba.pause();
     cantoMarosa.loop();
     sonido4=10;
   }
-  if (keyCode == 75) { //cantos toba
+  if (key == 'k' || key == 'K') { //cantos toba
     cantoUnDia.pause();
     cantoMarosa.pause();
     coroToba.loop();
     sonido4=11;
   }
-  if (keyCode == 76) { //L
+  if (key == 'l' || key == 'L') { //L
     cantoMarosa.pause();
     coroToba.pause();
     cantoUnDia.loop();
