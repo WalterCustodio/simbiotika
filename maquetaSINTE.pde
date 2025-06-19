@@ -14,6 +14,9 @@
  */
 
 
+//agregar metronomo
+//ver como pasar de tempo de un sonido a otro (para encender quizas solo reiniciando se soluciona... 
+//pero para apagar quizas suene raro)
 
 
 
@@ -22,9 +25,9 @@
 
 import ddf.minim.*;
 Minim minim;
-AudioPlayer cumbia, bombo, tango;
-//AudioPlayer bombo;
-AudioPlayer sHongo1, sHongo2, sHongo3, sHongo4, sHongo5, sHongo6;
+AudioPlayer cumbia, bombo, tango, gotas, brasas, caracola, cantoMarosa, coroToba, cantoUnDia, cuenco, zumbido;
+
+//AudioPlayer sHongo1, sHongo2, sHongo3, sHongo4, sHongo5, sHongo6;
 
 
 String[] Ritmo = new String[3];
@@ -35,18 +38,31 @@ int sonido1, sonido2, sonido3, sonido4;
 color PRENDIDO = color(0, 125, 0);
 color APAGADO = color(125);
 
-boolean onRitmo1, onRitmo2, onRitmo3, onNat1, onNat2, onNat3, onZum1, onZum2, onZum3, onVoz1, onVoz2, onVoz3 = false;
+//boolean onRitmo1, onRitmo2, onRitmo3, onNat1, onNat2, onNat3, onZum1, onZum2, onZum3, onVoz1, onVoz2, onVoz3 = false;
 
 
 
 void setup() {
-
   // Inicializa Minim
   minim = new Minim(this);
+  //ritmos
   cumbia = minim.loadFile("data/Cuarteto.mp3");
   bombo = minim.loadFile("data/bombo.mp3");
   tango = minim.loadFile("data/tango.mp3");
+  
+  //naturaleza
+  gotas = minim.loadFile("data/gotas.mp3");
+  brasas = minim.loadFile("data/brasas.mp3");
+  caracola = minim.loadFile("data/caracola.mp3");
+  
+  //zumbidos
+  cuenco = minim.loadFile("data/cuenco.mp3");
+  zumbido = minim.loadFile("data/zumbido.mp3");
 
+  //voces
+  cantoMarosa = minim.loadFile("data/cantoMarosa.mp3");
+  coroToba = minim.loadFile("data/coroToba.mp3");
+  cantoUnDia = minim.loadFile("data/cantoUnDia.mp3");
 
   size(300, 300);
   sonido1 = 50;
@@ -69,9 +85,9 @@ void setup() {
 }
 
 void draw() {
-  cumbia.setGain(-0.0);
+  //cumbia.setGain(-0.0);
   
-  println("onRitmo1: ", onRitmo1);
+  //println("onRitmo1: ", onRitmo1);
   background(255);
   textSize(18);
   text("Ritmo:A,B,C\nNaturaleza:D,E,F\nZumbido:G,H,I\nVoces:J,K,L", 18, 200);
@@ -105,36 +121,33 @@ void draw() {
 
 
 
-
-
-
   //------INTERACCIÓN----------//
   /* AL APRETAR LA TECLA, EL CUADRADO SE ILUMINA Y MUESTRA EL NOMBRE DEL SONIDO.*/
 
   //----RITMO----//
   fill(0);
   if (sonido1==1) {
-    onRitmo1=true;
+    /*onRitmo1=true;
     onRitmo2=false;
-    onRitmo3=false;
+    onRitmo3=false;*/
     fill(PRENDIDO);
     rect(18, 35, 54, 20);
     fill(0);
     text(Ritmo[0], 30, 50);
   }
   if (sonido1==2) {
-    onRitmo1=false;
+    /*onRitmo1=false;
     onRitmo2=true;
-    onRitmo3=false;
+    onRitmo3=false;*/
     fill(PRENDIDO);
     rect(18, 85, 54, 20);
     fill(0);
     text(Ritmo[1], 30, 100);
   }
   if (sonido1==3) {
-    onRitmo1=false;
+    /*onRitmo1=false;
     onRitmo2=false;
-    onRitmo3=true;
+    onRitmo3=true;*/
     fill(PRENDIDO);
     rect(18, 135, 54, 20);
     fill(0);
@@ -172,12 +185,12 @@ void draw() {
     fill(0);
     text(Zumbido[1], 150, 100);
   }
-  if (sonido3==9) {
+  /*if (sonido3==9) {
     fill(PRENDIDO);
     rect(147, 135, 62, 20);
     fill(0);
     text(Zumbido[2], 150, 150);
-  }
+  }*/
   //-------VOCES ---------------
   if (sonido4==10) {
     fill(PRENDIDO);
@@ -200,8 +213,7 @@ void draw() {
 
   //-------------------------------//
 
-  if (onRitmo1==true) {
-   
+  /*if (onRitmo1==true) {
    
     onRitmo2=false;
     onRitmo3=false;
@@ -211,54 +223,82 @@ void draw() {
     onRitmo1=false;
     onRitmo3=false;
   }
+  if (onRitmo3 == true)
+  {
+    onRitmo1=false;
+    onRitmo2=false;    
+  }*/
 } // cierre draw
 
 
 
 void keyPressed() {
-  if (keyCode == 65) { //letra A mayuscula
+  if (key == 'a' || key == 'A') { //letra A mayuscula
      bombo.pause();
      tango.pause();
-     sonido1=1;
      cumbia.loop();
+     sonido1=1; //guarda con este, quizas limitarlo todo a las variables "onRitmo" y definirlas en un condicional aparte (agregando el pause() y loop() de cada sonido)
   }
-  if (keyCode == 66) { // B
+  if (key == 'b' || key == 'B') { // B
     cumbia.pause();
     tango.pause();
-    sonido1=2;
     bombo.loop();
+    sonido1=2;
   } 
-  if (keyCode == 67) { //C
+  if (key == 'c' || key == 'C') { //C
     bombo.pause();
     cumbia.pause();
-    sonido1=3;
     tango.loop();
+    sonido1=3;
   } 
   if (keyCode == 68) { // D
+    brasas.pause();
+    caracola.pause();
+    gotas.loop();
     sonido2=4;
   }
-  if (keyCode == 69) { // E
+  if (key == 'e' || key == 'E') { // fuego
+    gotas.pause();
+    caracola.pause();
+    brasas.loop();
     sonido2=5;
   }
-  if (keyCode == 70) { //F
+  if (keyCode == 70) { //F caracola
+    gotas.pause();    
+    brasas.pause();
+    caracola.loop();
     sonido2=6;
   }
-  if (keyCode == 71) { //G
+  if (key == 'g' || key == 'G') { //cuenco
+    zumbido.pause();
+    cuenco.loop();
     sonido3=7;
   }
-  if (keyCode == 72) { //H
+  if (key == 'h' || key == 'H') { //H
+    cuenco.pause();
+    zumbido.loop();
     sonido3=8;
   }
-  if (keyCode == 73) { //I
+  /*if (keyCode == 73) { //I
     sonido3=9;
-  }
+  }*/
   if (keyCode == 74) { //J
+    cantoUnDia.pause();
+    coroToba.pause();
+    cantoMarosa.loop();
     sonido4=10;
   }
-  if (keyCode == 75) { //K
+  if (keyCode == 75) { //cantos toba
+    cantoUnDia.pause();
+    cantoMarosa.pause();
+    coroToba.loop();
     sonido4=11;
   }
   if (keyCode == 76) { //L
+    cantoMarosa.pause();
+    coroToba.pause();
+    cantoUnDia.loop();
     sonido4=12;
   }
+  
 }
