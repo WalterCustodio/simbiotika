@@ -12,9 +12,7 @@
  06/06/2025
  */
 
-//agregar los sonidos de las teclas simples
-//agregar en una funcion aparte un "modo facil" de las tacles con lo que ya tenemos del tempo, (pero usando un metronomo aparte). if (modoFacil = false {codigo en draw de las teclas peladas} else if (modoFacil = true){modoFacil();})
-//ver como pasar de tempo de un sonido a otro (para encender quizas solo reiniciando se soluciona... 
+ //ver como pasar de tempo de un sonido a otro (para encender quizas solo reiniciando se soluciona... 
 //pero para apagar quizas suene raro)
 
 
@@ -24,9 +22,7 @@
 
 import ddf.minim.*;
 Minim minim;
-AudioPlayer cumbia, bombo, tango, gotas, brasas, caracola, cantoMarosa, coroToba, cantoUnDia, cuenco, zumbido;
-
-//AudioPlayer sHongo1, sHongo2, sHongo3, sHongo4, sHongo5, sHongo6;
+AudioPlayer cumbia, bombo, tango, gotas, brasas, caracola, cantoMarosa, coroToba, cantoUnDia, cuenco, zumbido, sHongo1, sHongo2, sHongo3, sHongo4, sHongo5, sHongo6;
 
 
 String[] Ritmo = new String[3];
@@ -34,6 +30,7 @@ String[] Naturaleza = new String[3];
 String[] Zumbido = new String[3];
 String[] Voces = new String[3];
 int sonido1, sonido2, sonido3, sonido4;
+int hongo1;
 color PRENDIDO = color(0, 125, 0);
 color APAGADO = color(125);
 //--
@@ -51,8 +48,14 @@ boolean sePideSonido2 = false;
 boolean sePideSonido3 = false;
 boolean sePideSonido4 = false;
 
-//boolean onRitmo1, onRitmo2, onRitmo3, onNat1, onNat2, onNat3, onZum1, onZum2, onZum3, onVoz1, onVoz2, onVoz3 = false;
+//----------------------MODO FACIL-----
+boolean modoFacilActivado = false;
 
+boolean estaApretado = false;
+int bpmF = bpm*2;
+int intervaloF = 60000 / bpmF; // milisegundos entre beats
+int ultimoGolpeBeatF = 0;
+boolean seGolpeoBeatF = false; 
 
 
 void setup() {
@@ -83,11 +86,21 @@ void setup() {
   cantoMarosa.setGain(-10); //volumen
   coroToba.setGain(-10);
   cantoUnDia.setGain(-10);
+  
+  //HONGOS-------------
+  sHongo1 = minim.loadFile("data/hongos/do.mp3", 1024);
+  sHongo2 = minim.loadFile("data/hongos/re.mp3", 1024);  
+  sHongo3 = minim.loadFile("data/hongos/mi.mp3", 1024);
+  sHongo4 = minim.loadFile("data/hongos/fa.mp3", 1024); 
+  sHongo5 = minim.loadFile("data/hongos/sol.mp3", 1024);
+  sHongo6 = minim.loadFile("data/hongos/la.mp3", 1024);
 
   sonido1 = 50;
   sonido2 = 50;
   sonido3 = 50;
   sonido4 = 50;
+  
+  hongo1 = 50;
 
   Ritmo[0] = "Ritmo1";
   Ritmo[1] = "Ritmo 2";
@@ -104,45 +117,10 @@ void setup() {
 }
 
 void draw() {
-  //cumbia.setGain(-0.0);
-  
-  background(255);
-  textSize(18);
-  text("Ritmo:A,B,C\nNaturaleza:D,E,F\nZumbido:G,H,I\nVoces:J,K,L", 18, 200);
-  text ("Tempo actual: "+bpm+ "BPM", 202, 373);
-
-  textSize(12);
-
-  fill(APAGADO);
-  rect(18, 35, 54, 20);  //RITMO 1
-  rect(18, 85, 54, 20);  //RITMO 2
-  rect(18, 135, 54, 20); //RITMO 3
-  // ---RITMO------//
-  rect(18, 35, 54, 20);  //N1
-  rect(18, 85, 54, 20);  //N2
-  rect(18, 135, 54, 20); //N3
-  //---NATURALEZA---//
-  rect(79, 35, 62, 20);
-  rect(79, 85, 62, 20);
-  rect(79, 135, 62, 20);
-  //---ZUMBIDO---//
-  rect(147, 35, 62, 20);
-  rect(147, 85, 62, 20);
-  rect(147, 135, 62, 20);
-  //-----ZUMBIDO---//
-  rect(1470, 35, 62, 20);
-  rect(147, 85, 62, 20);
-  rect(147, 135, 62, 20);
-  //----VOCES-------//
-  rect(220, 35, 62, 20);
-  rect(220, 85, 62, 20);
-  rect(220, 135, 62, 20);
-
-
+  InterfazSinInteraccion();
 
   //------INTERACCIÓN----------//
   /* AL APRETAR LA TECLA, EL CUADRADO SE ILUMINA Y MUESTRA EL NOMBRE DEL SONIDO.*/
-
   //----RITMO----//
   fill(0);
   //if (sePideSonido) {
@@ -164,9 +142,7 @@ void draw() {
     }
   //}
   if (sonido1==2 ) {
-    /*onRitmo1=false;
-    onRitmo2=true;
-    onRitmo3=false;*/
+ 
     fill(PRENDIDO);
     rect(18, 85, 54, 20);
     fill(0);
@@ -183,9 +159,7 @@ void draw() {
     }
   }
   if (sonido1==3 ) {
-    /*onRitmo1=false;
-    onRitmo2=false;
-    onRitmo3=true;*/
+ 
     fill(PRENDIDO);
     rect(18, 135, 54, 20);
     fill(0);
@@ -330,12 +304,18 @@ void draw() {
         sePideSonido4 = false;
     }
   }
-
+  
+  //HONGOS---------------------
+  if (modoFacilActivado) {
+    HongosModoFacil();
+  } else {
+      HongosModoNormal();
+  }
   
   //--------------Metronomo-----------------
   rect(199, 337, 20, 20);
   if (millis() - ultimoGolpeBeat >= intervalo) { 
-      println("Beat!");
+      //println("Beat!");
       ultimoGolpeBeat = millis();
 
       seGolpeoBeat = true; //"se golpeó" se activa cada vez que el tempo golpea (hace pulso/beat)
@@ -344,7 +324,6 @@ void draw() {
       PRENDIDOSinTocar = color(117, 195, 242);
       fill(PRENDIDOSinTocar); //luz celeste
       rect(199, 337, 20, 20);
-      //hongos: ...
       pop();           
   } else {
       PRENDIDOSinTocar = 0; //luz celeste
@@ -356,16 +335,18 @@ void draw() {
 
 
 void keyPressed() {
-  //sePideSonido = true;
+   if (keyCode == UP) {
+    modoFacilActivado = true;
+  } else if (keyCode == DOWN) {
+    modoFacilActivado = false;
+  }
   
   if (key == 'a' || key == 'A') { //letra A mayuscula
-    //sePideSonido = true;
-      sePideSonido = true;
+       sePideSonido = true;
     sonido1=1;    
   }
   if (key == 'b' || key == 'B') { // B
-    //sePideSonido = true;
-      sePideSonido = true;
+       sePideSonido = true;
     sonido1=2;
   } 
   if (key == 'c' || key == 'C') { //C
@@ -411,4 +392,341 @@ void keyPressed() {
     sonido4=12;
   }
   
+    ///-------------------------------- HONGOS ----------------------------//
+  
+  if (key == '1') { //1
+    hongo1=1;
+    
+    if (modoFacilActivado) {
+    estaApretado = true;
+    }
+  }
+  if (key == '2') { // 2
+    hongo1=2;
+        
+    if (modoFacilActivado) {
+    estaApretado = true;
+    }
+  }
+  if (key == '3') { //3
+    hongo1=3;
+        
+    if (modoFacilActivado) {
+    estaApretado = true;
+    }
+  }
+  if (key == '4') { // 4
+    hongo1=4;
+        
+    if (modoFacilActivado) {
+    estaApretado = true;
+    }
+  }
+  if (key == '5') { // 5
+    hongo1=5;
+    
+    if (modoFacilActivado) {
+      estaApretado = true;
+      }
+    }
+    if (key == '6') { //6
+      hongo1=6;
+      
+    if (modoFacilActivado) {
+    estaApretado = true;
+    }
+  }
+}
+
+
+void HongosModoNormal() {
+        if (hongo1==1) {
+        push();     
+        fill(PRENDIDO);
+        rect(350, 35, 20, 20);
+        pop();     
+          
+        sHongo1.play();
+ 
+      } else {
+         sHongo1.pause();
+         sHongo1.rewind();         
+      } 
+      if (hongo1==2) {
+        push(); 
+        fill(PRENDIDO);
+        rect(350, 85, 20, 20);
+        pop();      
+ 
+        sHongo2.play();
+ 
+      } else {
+         sHongo2.pause();
+         sHongo2.rewind();         
+      } 
+     
+      if (hongo1==3) {
+        push();
+        fill(PRENDIDO);
+        rect(350, 135, 20, 20); 
+        pop();     
+ 
+        sHongo3.play();
+ 
+      }else {
+         sHongo3.pause();
+         sHongo3.rewind();         
+      } 
+      
+      
+      if (hongo1==4) {
+        push();
+        fill(PRENDIDO);
+        rect(385, 35, 20, 20); 
+        pop();      
+ 
+        sHongo4.play();
+ 
+      }else {
+         sHongo4.pause();
+         sHongo4.rewind();         
+      } 
+      
+      if (hongo1==5) {
+        push();
+        fill(PRENDIDO);
+        rect(385, 85, 20, 20);
+        pop();
+ 
+        sHongo5.play();
+   
+      }else {
+         sHongo5.pause();
+         sHongo5.rewind();         
+      } 
+      
+      if (hongo1==6) {
+        push();
+        fill(PRENDIDO);
+        rect(385, 135, 20, 20); 
+        pop();
+  
+        sHongo6.play();
+ 
+      }else {
+         sHongo6.pause();
+         sHongo6.rewind();         
+      } 
+}
+
+
+
+
+
+
+void HongosModoFacil() {
+  println(mouseX, mouseY);
+  text("Modo facil", 445, 13);
+  
+  if (millis() - ultimoGolpeBeatF >= intervaloF) { 
+      println("Beat!");
+      ultimoGolpeBeatF = millis();
+
+      seGolpeoBeatF = true; //"se golpeó" se activa cada vez que el tempo golpea (hace pulso/beat)
+      
+      fill(PRENDIDOSinTocar); //luz celeste
+      
+      //----metronomo (Cuadrado negro)----
+      //hongos
+      rect(350, 35, 20, 20);  
+      rect(350, 85, 20, 20);  
+      rect(350, 135, 20, 20); 
+      // ---------//
+      rect(385, 35, 20, 20);  
+      rect(385, 85, 20, 20); 
+      rect(385, 135, 20, 20);      
+     } else {
+           seGolpeoBeatF = false;       
+     } //fin metronomo
+    
+    println(ultimoGolpeBeatF);
+    
+        //-----HONGOS----AL PRESIONAR:
+    if (estaApretado == true) {
+      if (hongo1==1) {
+        push();     
+        fill(PRENDIDO);
+        rect(350, 35, 20, 20);
+        pop();     
+        if (seGolpeoBeatF == true) {
+          push(); 
+          fill(PRENDIDOAlTocar);
+          rect(350, 35, 20, 20);
+          pop();
+          
+          sHongo1.play();
+
+          estaApretado = false;
+        } else {
+          sHongo1.rewind();
+          sHongo1.pause();
+        }
+      }    
+      if (hongo1==2) {
+        push(); 
+        fill(PRENDIDO);
+        rect(350, 85, 20, 20);
+        pop();      
+        if (seGolpeoBeatF == true) {
+          push(); 
+          fill(PRENDIDOAlTocar);
+          rect(350, 85, 20, 20);
+          pop();
+          
+          sHongo2.play();
+           
+          estaApretado = false;
+        } else {
+          sHongo2.rewind();
+          sHongo2.pause();
+        }
+      }
+     
+      if (hongo1==3) {
+        push();
+        fill(PRENDIDO);
+        rect(350, 135, 20, 20); 
+        pop();     
+        if (seGolpeoBeatF == true) {
+          push(); 
+          fill(PRENDIDOAlTocar);
+          rect(350, 135, 20, 20); 
+          pop();
+          
+          sHongo3.play();
+           
+          estaApretado = false;
+        } else {
+          sHongo3.rewind();
+          sHongo3.pause();
+        }
+      }
+      if (hongo1==4) {
+        push();
+        fill(PRENDIDO);
+        rect(385, 35, 20, 20); 
+        pop();      
+        if (seGolpeoBeatF == true) {
+          push(); 
+          fill(PRENDIDOAlTocar);
+          rect(385, 35, 20, 20); 
+          pop();
+          
+          sHongo4.play();
+           
+          estaApretado = false;
+        } else {
+          sHongo4.rewind();
+          sHongo4.pause();
+        }
+      }
+      if (hongo1==5) {
+        push();
+        fill(PRENDIDO);
+        rect(385, 85, 20, 20);
+        pop();
+        if (seGolpeoBeatF == true) {
+          push(); 
+          fill(PRENDIDOAlTocar);
+          rect(385, 85, 20, 20);
+          pop();
+          
+          sHongo5.play();
+           
+          estaApretado = false;
+        } else {
+          sHongo5.rewind();
+          sHongo5.pause();
+        }    
+      }
+      if (hongo1==6) {
+        push();
+        fill(PRENDIDO);
+        rect(385, 135, 20, 20); 
+        pop();
+        if (seGolpeoBeatF == true) {
+          push(); 
+          fill(PRENDIDOAlTocar);
+          rect(385, 135, 20, 20); 
+          pop();
+          
+          sHongo6.play();
+           
+          estaApretado = false;
+        } else {
+          sHongo6.rewind();
+          sHongo6.pause();
+        }
+      }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void InterfazSinInteraccion() {
+    background(255);
+  textSize(18);
+  text("Ritmo:A,B,C\nNaturaleza:D,E,F\nZumbido:G,H\nVoces:J,K,L", 18, 200);
+  text ("Tempo actual: "+bpm+ "BPM", 202, 373);
+
+  textSize(12);
+
+  fill(APAGADO);
+  rect(18, 35, 54, 20);  //RITMO 1
+  rect(18, 85, 54, 20);  //RITMO 2
+  rect(18, 135, 54, 20); //RITMO 3
+  // ---RITMO------//
+  rect(18, 35, 54, 20);  //N1
+  rect(18, 85, 54, 20);  //N2
+  rect(18, 135, 54, 20); //N3
+  //---NATURALEZA---//
+  rect(79, 35, 62, 20);
+  rect(79, 85, 62, 20);
+  rect(79, 135, 62, 20);
+  //---ZUMBIDO---//
+  rect(147, 35, 62, 20);
+  rect(147, 85, 62, 20);
+ // rect(147, 135, 62, 20);
+  //-----ZUMBIDO---//
+  rect(1470, 35, 62, 20);
+  rect(147, 85, 62, 20);
+  //rect(147, 135, 62, 20);
+  //----VOCES-------//
+  rect(220, 35, 62, 20);
+  rect(220, 85, 62, 20);
+  rect(220, 135, 62, 20);
+
+  //2)--------HONGOS/bombos:---------//
+    fill(APAGADO);
+    rect(350, 35, 20, 20);  //1
+    rect(350, 85, 20, 20);  //2
+    rect(350, 135, 20, 20); //3
+    // ---------//
+    rect(385, 35, 20, 20);  //4
+    rect(385, 85, 20, 20);  //5
+    rect(385, 135, 20, 20); //6
 }
